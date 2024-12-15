@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Diet Plan</title>
+    <link rel="stylesheet" href="/styles.css"> <!-- Optional CSS -->
+</head>
+<body>
+    <h1>Your Diet Plan</h1>
+    <div id="diet-plan-result">
+        <% if (dietPlan && dietPlan.length > 0) { %>
+            <% dietPlan.forEach((day, index) => { %>
+                <h3>Day <%= index + 1 %></h3>
+                <ul>
+                    <% if (day.meals && Array.isArray(day.meals) && day.meals.length > 0) { %>
+                        <% day.meals.forEach(meal => { %>
+                            <li>
+                                <strong>Food:</strong> <%= meal.Food %>, 
+                                <strong>Calories:</strong> <%= meal.Calories.toFixed(2) %>, 
+                                <strong>Proteins:</strong> <%= meal.Proteins.toFixed(2) %>g, 
+                                <strong>Carbs:</strong> <%= meal.Carbs.toFixed(2) %>g, 
+                                <strong>Fats:</strong> <%= meal.Fats.toFixed(2) %>g
+                            </li>
+                        <% }) %>
+                    <% } else { %>
+                        <li>No valid meals for this day.</li>
+                    <% } %>
+                </ul>
+            <% }) %>
+        <% } else { %>
+            <p>No diet plan available. Please generate one first.</p>
+        <% } %>
+    </div>
+</body>
+</html>

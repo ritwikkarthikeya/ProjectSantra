@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In</title>
+    <style>
+      body {
+        background: linear-gradient(rgba(135, 206, 235, 0.3), rgba(135, 206, 235, 0.3)),
+          url('/signinbg.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+      }
+      form {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 10px;
+        width: 300px;
+      }
+      label, input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .error {
+        color: red;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/signin" method="POST">
+      <h1>Sign In</h1>
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required />
+      
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
+    
+      <button type="submit">Sign In</button>
+      <% if (errorMessage) { %>
+        <div class="error"><%= errorMessage %></div>
+      <% } %>
+
+      <p>New User? <a href="/signup">Sign-up</a></p>
+    </form>
+  </body>
+</html>
