@@ -49,7 +49,7 @@ exports.signup = async (req, res) => {
     });
 
     // Redirect to the sign-in page after successful signup
-    res.redirect('/signin');
+    res.redirect('/details-form');
   } catch (error) {
     console.error('Error during user creation:', error.message);
     res.status(500).json({ statusCode: 500, errorMessage: 'Internal Server Error' });

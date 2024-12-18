@@ -14,7 +14,7 @@ router.get('/homepage', authenticateToken,(req, res) => {
   res.render('homepage', { user: req.user });
 });
 router.get('/my-plan/day/:day', authenticateToken, userController.getDietPlanForDay);
-
+router.get('/my-plan/all',authenticateToken, userController.getCompleteDietPlan);
 router.post('/diet-plan/adjust/:day',authenticateToken, userController.adjustDietPlanBasedOnUserInput);
 
 module.exports = router;

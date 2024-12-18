@@ -268,3 +268,20 @@ exports.adjustDietPlanBasedOnUserInput = async (req, res) => {
         res.status(500).json({ success: false, message: 'Error adjusting the diet plan.' });
     }
 };
+exports.getCompleteDietPlan = async (req, res) => {
+    try {
+        const dietPlanRecord = await DietPlan.findOne({ userId: req.user._id });
+
+        if (!dietPlanRecord || !dietPlanRecord.dietPlan) {
+            return res.status(404).json({
+                success: false,
+                message: 'No diet plan found. Please generate your diet plan first.',
+            });
+        }
+
+        res.json({ success: true, plan: dietPlanRecord.dietPlan });
+    } catch (error) {
+        console.error('Error fetching complete diet plan:', error);
+        res.status(500).json({ success: false, message: 'Error fetching the complete diet plan.' });
+    }
+};
