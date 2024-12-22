@@ -4,39 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diet Plan Generator</title>
-    <link rel="stylesheet" href="/styles.css"> <!-- Optional CSS -->
+    <style>
+        /* General Reset */
+        body, h1, label, input, select, button {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #17BBEF; /* Light Blue */
+            color: black; /* Text Color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Container Styling */
+        .container {
+            background-color: white; /* White Background for Form */
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Heading */
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #17BBEF;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Label Styling */
+        label {
+            text-align: left;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* Input and Select Styling */
+        input, select {
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #17BBEF;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        /* Button Styling */
+        button {
+            padding: 0.7rem;
+            background-color: #17BBEF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: black;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h1>Generate Your Diet Plan</h1>
-    <form id="diet-form" action="/generate-diet-plan" method="POST">
-        <label for="weight">Weight (kg):</label>
-        <input type="number" id="weight" name="weight" required><br>
-    
-        <label for="height">Height (cm):</label>
-        <input type="number" id="height" name="height" required><br>
-    
-        <label for="age">Age:</label>
-        <input type="number" id="age" name="age" required><br>
-    
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender" required>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-        </select><br>
-    
-        <label for="activity">Activity Level:</label>
-        <select id="activity" name="activity" required>
-            <option value="sedentary">Sedentary</option>
-            <option value="light">Light</option>
-            <option value="moderate">Moderate</option>
-            <option value="active">Active</option>
-        </select><br>
-    
-        <label for="target_weight">Target Weight (kg):</label>
-        <input type="number" id="target_weight" name="target_weight" required><br>
-    
-        <button type="submit">Generate Diet Plan</button>
-    </form>
-    
+    <div class="container">
+        <h1>Generate Your Diet Plan</h1>
+        <form id="diet-form" action="/generate-diet-plan" method="POST">
+            <label for="weight">Weight (kg):</label>
+            <input type="number" id="weight" name="weight" required>
+        
+            <label for="height">Height (cm):</label>
+            <input type="number" id="height" name="height" required>
+        
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
+        
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        
+            <label for="activity">Activity Level:</label>
+            <select id="activity" name="activity" required>
+                <option value="sedentary">Sedentary</option>
+                <option value="light">Light</option>
+                <option value="moderate">Moderate</option>
+                <option value="active">Active</option>
+            </select>
+        
+            <label for="target_weight">Target Weight (kg):</label>
+            <input type="number" id="target_weight" name="target_weight" required>
+        
+            <button type="submit">Generate Diet Plan</button>
+        </form>
+    </div>
 </body>
 </html>
+
+
+    
