@@ -193,100 +193,119 @@ exports.getDietPlanForDay = async (req, res) => {
     }
 };
 
-
 exports.adjustDietPlanBasedOnUserInput = async (req, res) => {
+    const { day } = req.params; // Extract day from URL
+    const { skippedFoods, additionalFood } = req.body; // Extract skippedFoods and additionalFood from request body
+    const dayIndex = parseInt(day, 10) - 1; // Convert day to zero-based index
+
+    // Validate input
+    if (isNaN(dayIndex) || dayIndex < 0 || dayIndex >= 30) {
+        return res.status(400).json({ success: false, message: 'Invalid day number. Please provide a valid day.' });
+    }
+
+    console.log(`Adjusting diet plan for day ${dayIndex + 1}`); // Debugging log
+
     try {
-        const { day } = req.params; // The day to adjust (e.g., Day 2)
-        const { userId } = req.user; // Assuming authenticateToken sets `req.user`
-        const { skippedItems, extraItems } = req.body; // Items skipped or eaten extra
-
         // Fetch the user's diet plan
-        const dietPlan = await DietPlan.findOne({ userId });
-        if (!dietPlan) {
-            return res.status(404).json({ message: 'Diet plan not found' });
+        const dietPlanRecord = await DietPlan.findOne({ userId: req.user._id });
+        if (!dietPlanRecord) {
+            return res.status(404).json({ success: false, message: 'No saved diet plan found. Please generate one first.' });
         }
 
-        // Find the current day's meals
-        const currentDayPlan = dietPlan.dietPlan.find(d => d.day === parseInt(day));
-        if (!currentDayPlan) {
-            return res.status(404).json({ message: `Diet plan for day ${day} not found` });
+        const dietPlan = dietPlanRecord.dietPlan;
+
+        // Ensure the diet plan exists
+        if (!dietPlan || dietPlan.length === 0) {
+            return res.status(404).json({ success: false, message: 'No diet plan found.' });
         }
 
-        // Adjust calories for skipped items
-        let calorieChange = 0;
-        let proteinChange = 0;
-        let carbChange = 0;
-        let fatChange = 0;
-
-        skippedItems.forEach(item => {
-            const meal = currentDayPlan.meals.find(m => m.Food === item.Food);
-            if (meal) {
-                calorieChange -= meal.Calories;
-                proteinChange -= meal.Proteins;
-                carbChange -= meal.Carbs;
-                fatChange -= meal.Fats;
-
-                // Remove the skipped item
-                currentDayPlan.meals = currentDayPlan.meals.filter(m => m.Food !== item.Food);
-            }
-        });
-
-        // Adjust calories for extra items
-        extraItems.forEach(item => {
-            calorieChange += item.Calories;
-            proteinChange += item.Proteins;
-            carbChange += item.Carbs;
-            fatChange += item.Fats;
-
-            // Add the extra item
-            currentDayPlan.meals.push(item);
-        });
-
-        // Balance the 30-day plan
-        const totalDays = dietPlan.dietPlan.length;
-        let remainingChange = calorieChange;
-        for (let i = 0; i < totalDays; i++) {
-            if (remainingChange === 0) break;
-
-            // Skip the current day
-            if (dietPlan.dietPlan[i].day === parseInt(day)) continue;
-
-            const meals = dietPlan.dietPlan[i].meals;
-            for (const meal of meals) {
-                if (remainingChange === 0) break;
-
-                // Adjust calories
-                const calorieAdjustment = Math.min(Math.abs(remainingChange), meal.Calories);
-                if (remainingChange > 0) {
-                    meal.Calories += calorieAdjustment;
-                    remainingChange -= calorieAdjustment;
-                } else {
-                    meal.Calories -= calorieAdjustment;
-                    remainingChange += calorieAdjustment;
-                }
-            }
-        }
-
-        if (remainingChange !== 0) {
-            return res.status(400).json({ 
-                message: 'Unable to fully balance the 30-day plan. Please adjust manually.', 
-                remainingChange 
+        // Calculate the total calories lost from skipped foods
+        let lostCalories = 0;
+        if (skippedFoods && skippedFoods.length > 0) {
+            skippedFoods.forEach((skippedFood) => {
+                // Find the skipped food and add its calories to lostCalories
+                dietPlan[dayIndex].meals.forEach((meal) => {
+                    if (meal.Food === skippedFood) {
+                        lostCalories += meal.Calories;
+                    }
+                });
             });
         }
 
-        // Save the updated diet plan
-        await dietPlan.save();
+        // Step 1: Replace skipped foods with alternatives for the selected day
+        if (skippedFoods && skippedFoods.length > 0) {
+            skippedFoods.forEach((skippedFood) => {
+                // Find a random alternative food item with similar calories
+                const replacement = data[Math.floor(Math.random() * data.length)];
+                
+                // Replace the skipped food with a new one for the selected day
+                dietPlan[dayIndex].meals = dietPlan[dayIndex].meals.map((meal) =>
+                    meal.Food === skippedFood
+                        ? {
+                              Food: replacement.food_name,
+                              Calories: replacement.energy_kcal,
+                              Proteins: replacement.protein_g,
+                              Carbs: replacement.carb_g,
+                              Fats: replacement.fat_g,
+                          }
+                        : meal
+                );
+            });
+        }
 
-        res.status(200).json({ 
-            message: 'Diet plan adjusted successfully.', 
-            updatedPlan: dietPlan 
-        });
+        // Step 2: Add the additional food to the plan if provided
+        if (additionalFood) {
+            const additionalFoodItem = data.find((item) => item.food_name.toLowerCase() === additionalFood.toLowerCase());
+            if (additionalFoodItem) {
+                dietPlan[dayIndex].meals.push({
+                    Food: additionalFoodItem.food_name,
+                    Calories: additionalFoodItem.energy_kcal,
+                    Proteins: additionalFoodItem.protein_g,
+                    Carbs: additionalFoodItem.carb_g,
+                    Fats: additionalFoodItem.fat_g,
+                });
+            } else {
+                console.warn(`Food "${additionalFood}" not found in the dataset.`);
+            }
+        }
+
+        // Step 3: Redistribute lost calories across the remaining days
+        if (lostCalories > 0) {
+            // Calculate the remaining days after the skipped day
+            const remainingDays = dietPlan.slice(dayIndex + 1); // Get all days after the skipped day
+            const totalRemainingDays = remainingDays.length;
+
+            // Distribute the lost calories evenly across the remaining days
+            const caloriesPerDay = lostCalories / totalRemainingDays;
+
+            remainingDays.forEach((dayPlan, index) => {
+                // Add the lost calories to each day's meals and replace/adjust meals accordingly
+                dayPlan.meals.forEach((meal) => {
+                    meal.Calories += caloriesPerDay; // Increase calories for each meal in this day
+                    
+                    // Optionally replace meals if the new calorie target is significantly higher
+                    if (meal.Calories > 500) { // Example threshold for adjusting meals
+                        const replacement = data[Math.floor(Math.random() * data.length)];
+                        meal.Food = replacement.food_name;
+                        meal.Calories = replacement.energy_kcal;
+                        meal.Proteins = replacement.protein_g;
+                        meal.Carbs = replacement.carb_g;
+                        meal.Fats = replacement.fat_g;
+                    }
+                });
+            });
+        }
+
+        // Step 4: Update the entire diet plan and save it back to the database
+        dietPlanRecord.dietPlan = dietPlan;
+        await dietPlanRecord.save();
+
+        res.json({ success: true, updatedPlan: dietPlan[dayIndex].meals });
     } catch (error) {
         console.error('Error adjusting diet plan:', error);
-        res.status(500).json({ message: 'An error occurred while adjusting the diet plan.' });
+        res.status(500).json({ success: false, message: 'Error adjusting the diet plan.' });
     }
 };
-
 
 
 exports.getCompleteDietPlan = async (req, res) => {
