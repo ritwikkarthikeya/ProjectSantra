@@ -250,17 +250,24 @@
       }
 
       /* Center alignment for search bar and results */
-      #searchContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        margin-top: 10px;
-        background-color: #000000;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
+      .search-container {
+  display: none; /* Initially hidden */
+  position: absolute; /* Ensures it "hovers" below the button */
+  top: 100%; /* Places it below the button */
+  left: 0;
+  right: 0;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background-color: #000000;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  z-index: 10;
+  border: 1px solid #000000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
       /* Highlight when no results are found */
       #searchResults:empty {
@@ -284,6 +291,7 @@
           <button class="btn search-toggle" id="searchToggleButton">
             <i class="animation"></i>Search<i class="animation"></i>
           </button>
+          
           <div class="search-container">
             <form id="searchForm" method="GET" action="/search">
               <input
@@ -294,11 +302,10 @@
                 placeholder="Search users by username..."
                 required
               />
-              <button type="submit" id="searchButton" class="btn">
-                Search
-              </button>
+              <button type="submit" id="searchButton" class="btn">Search</button>
             </form>
           </div>
+          
           <div id="searchResults" style="margin-top: 20px; display: none">
             <h3>Search Results:</h3>
             <ul id="resultsList"></ul>
@@ -365,9 +372,9 @@
     <!-- Scripts -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        const searchToggleButton =
-          document.getElementById("searchToggleButton");
-        const searchContainer = document.getElementById("searchContainer");
+        const searchToggleButton = document.getElementById("searchToggleButton");
+  const searchContainer = document.querySelector(".search-container");
+
         const dietPlanContainer = document.getElementById("wholeResult");
         const myPlanButton = document.getElementById("myPlanButton");
         const fetchDayPlanButton =
@@ -381,14 +388,16 @@
         const searchInput = document.getElementById("searchInput");
         const searchButton = document.getElementById("searchButton");
         const searchResultsContainer = document.getElementById("searchResults");
-
-        // Search Toggle
         if (searchToggleButton && searchContainer) {
-          searchToggleButton.addEventListener("click", () => {
-            searchContainer.style.display =
-              searchContainer.style.display === "flex" ? "none" : "flex";
-          });
-        }
+    searchToggleButton.addEventListener("click", () => {
+      // Toggle the visibility of the search container
+      if (searchContainer.style.display === "none" || !searchContainer.style.display) {
+        searchContainer.style.display = "flex"; // Make it visible
+      } else {
+        searchContainer.style.display = "none"; // Hide it
+      }
+    });
+  }
 
         // My Plan Button
         if (myPlanButton && dietPlanContainer) {

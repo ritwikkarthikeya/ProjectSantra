@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes
 app.use(authRoutes);
 app.use(dietRoutes);
-
+app.use(searchRoutes);
 // Start server
 mongoose.connect('mongodb://localhost:27017/ProjectSante', {
   useNewUrlParser: true,
