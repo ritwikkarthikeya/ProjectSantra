@@ -6,7 +6,6 @@
     <title>Dashboard | Diet Plan</title>
     <link rel="stylesheet" href="/styles.css" />
     <style>
-      /* Existing styles remain untouched */
       .navbar {
         display: flex;
         align-items: center;
@@ -252,23 +251,23 @@
 
       /* Center alignment for search bar and results */
       .search-container {
-        display: none; /* Initially hidden */
-        position: absolute; /* Ensures it "hovers" below the button */
-        top: 100%; /* Places it below the button */
-        left: 0;
-        right: 0;
-        border-top-left-radius: 0px;
-        border-top-right-radius: 0px;
-        border-bottom-left-radius: 20px;
-        border-bottom-right-radius: 20px;
-        background-color: #000000;
-        align-items: center;
-        justify-content: center;
-        padding: 15px;
-        z-index: 10;
-        border: 1px solid #000000;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
+  display: none; /* Initially hidden */
+  position: absolute; /* Ensures it "hovers" below the button */
+  top: 100%; /* Places it below the button */
+  left: 0;
+  right: 0;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background-color: #000000;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  z-index: 10;
+  border: 1px solid #000000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
       /* Highlight when no results are found */
       #searchResults:empty {
@@ -278,41 +277,6 @@
         color: #999;
         font-size: 16px;
         font-weight: bold;
-      }
-
-      /* Additional styles for new sections */
-      .section-container {
-        margin: 20px auto;
-        padding: 20px;
-        border-radius: 10px;
-        background-color: #f8f9fa;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      .section-container h2 {
-        text-align: center;
-        color: #17bbef;
-      }
-
-      .section-container p {
-        margin: 10px 0;
-        text-align: center;
-        font-size: 16px;
-        color: #333;
-      }
-
-      .section-container ul {
-        list-style: none;
-        padding: 0;
-        margin: 10px auto;
-      }
-
-      .section-container ul li {
-        background: #e9ecef;
-        margin: 5px 0;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
       }
     </style>
   </head>
@@ -327,6 +291,7 @@
           <button class="btn search-toggle" id="searchToggleButton">
             <i class="animation"></i>Search<i class="animation"></i>
           </button>
+          
           <div class="search-container">
             <form id="searchForm" method="GET" action="/search">
               <input
@@ -337,15 +302,15 @@
                 placeholder="Search users by username..."
                 required
               />
-              <button type="submit" id="searchButton" class="btn">
-                Search
-              </button>
+              <button type="submit" id="searchButton" class="btn">Search</button>
             </form>
           </div>
+          
           <div id="searchResults" style="margin-top: 20px; display: none">
             <h3>Search Results:</h3>
             <ul id="resultsList"></ul>
           </div>
+
           <button class="btn" id="myPlanButton">
             <i class="animation"></i>MY PLAN<i class="animation"></i>
           </button>
@@ -357,67 +322,58 @@
         </div>
       </div>
     </nav>
+    <div id="popup" class="popup" style="display: none">
+      <div class="popup-content">
+        <!-- Day Selection -->
+        <section class="day-selection">
+          <h3>Select the day you're on (1-30):</h3>
+          <input
+            type="number"
+            id="dayInput"
+            min="1"
+            max="30"
+            placeholder="Enter day number"
+          />
+          <button id="fetchDayPlanButton">Get Diet Plan</button>
+        </section>
+
+        <!-- Diet Plan Result -->
+        <section id="dietPlanResult" style="display: none">
+          <h3>Diet Plan for Day <span id="dayNumber"></span></h3>
+          <form id="dietPlanForm">
+            <div id="dietPlanCheckboxes">
+              <!-- Checkbox list will be dynamically populated -->
+            </div>
+            <div class="additional-food">
+              <label for="additionalFood"
+                >Add a food item you consumed (not in the plan):</label
+              >
+              <input
+                type="text"
+                id="additionalFood"
+                name="additionalFood"
+                placeholder="E.g., Pizza, Ice Cream"
+              />
+            </div>
+            <button type="button" id="submitPlan">Update Diet Plan</button>
+          </form>
+        </section>
+      </div>
+    </div>
 
     <!-- Main Content -->
     <main>
-      <!-- Existing functionality -->
+      <!-- Day Selection -->
       <section id="wholeResult" style="display: none">
         <h3>die for 30 days:</h3>
-      </section>
-
-      <!-- New Sections -->
-      <!-- Fitness Goals Section -->
-      <section class="section-container" id="fitnessGoals">
-        <h2>Fitness Goals</h2>
-        <p>Track your monthly fitness goals and achievements.</p>
-        <ul>
-          <li>Goal 1: Lose 5kg</li>
-          <li>Goal 2: Exercise for 20 days</li>
-          <li>Goal 3: Drink 2 liters of water daily</li>
-        </ul>
-      </section>
-
-      <!-- Weekly Meal Plan Section -->
-      <section class="section-container" id="weeklyMealPlan">
-        <h2>Weekly Meal Plan</h2>
-        <p>Preview your meals for the week based on your diet plan.</p>
-        <ul>
-          <li>Day 1: Oats, Grilled Chicken, Steamed Veggies</li>
-          <li>Day 2: Smoothie, Fish, Salad</li>
-          <li>Day 3: Eggs, Turkey Wrap, Brown Rice</li>
-        </ul>
-      </section>
-
-      <!-- Calorie Tracker Section -->
-      <section class="section-container" id="calorieTracker">
-        <h2>Calorie Tracker</h2>
-        <p>Log your daily calorie intake and compare with your goals.</p>
-        <ul>
-          <li>Day 1: 1800 / 2000 kcal</li>
-          <li>Day 2: 1900 / 2000 kcal</li>
-          <li>Day 3: 1700 / 2000 kcal</li>
-        </ul>
-      </section>
-
-      <!-- Exercise Suggestions Section -->
-      <section class="section-container" id="exerciseSuggestions">
-        <h2>Exercise Suggestions</h2>
-        <p>Daily workout routines tailored to your fitness level.</p>
-        <ul>
-          <li>Push-ups: 3 sets of 15 reps</li>
-          <li>Jogging: 30 minutes</li>
-          <li>Plank: 2 minutes</li>
-        </ul>
       </section>
     </main>
 
     <!-- Scripts -->
     <script>
-      // Existing scripts remain unchanged
       document.addEventListener("DOMContentLoaded", () => {
-        const searchToggleButton =
-          document.getElementById("searchToggleButton");
-        const searchContainer = document.querySelector(".search-container");
+        const searchToggleButton = document.getElementById("searchToggleButton");
+  const searchContainer = document.querySelector(".search-container");
 
         const dietPlanContainer = document.getElementById("wholeResult");
         const myPlanButton = document.getElementById("myPlanButton");
@@ -433,18 +389,15 @@
         const searchButton = document.getElementById("searchButton");
         const searchResultsContainer = document.getElementById("searchResults");
         if (searchToggleButton && searchContainer) {
-          searchToggleButton.addEventListener("click", () => {
-            // Toggle the visibility of the search container
-            if (
-              searchContainer.style.display === "none" ||
-              !searchContainer.style.display
-            ) {
-              searchContainer.style.display = "flex"; // Make it visible
-            } else {
-              searchContainer.style.display = "none"; // Hide it
-            }
-          });
-        }
+    searchToggleButton.addEventListener("click", () => {
+      // Toggle the visibility of the search container
+      if (searchContainer.style.display === "none" || !searchContainer.style.display) {
+        searchContainer.style.display = "flex"; // Make it visible
+      } else {
+        searchContainer.style.display = "none"; // Hide it
+      }
+    });
+  }
 
         // My Plan Button
         if (myPlanButton && dietPlanContainer) {
